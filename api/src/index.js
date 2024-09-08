@@ -3,6 +3,9 @@ var morgan = require("morgan");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 
+const { errorHandlingMiddleware } = require("./middlewares/errorHandling");
+const adminRouter = require("./routes/admin.router");
+
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -13,12 +16,12 @@ app.use(bodyParser.json());
 // CORS
 
 // Database
-// Mongodb
+require("./db/mongodb");
 
 // Routers
-app.use("/", (req, res, next) => res.send({ check: "okw" }));
+app.use("/api/v1/admin", adminRouter);
 
 // Middleware error handling
-// app.use(errorHandlingMiddleware);
+app.use(errorHandlingMiddleware);
 
 app.listen(port);

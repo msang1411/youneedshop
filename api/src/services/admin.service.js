@@ -52,9 +52,9 @@ const deleteAdmin = async (id) => {
 
 const getAdminById = async (id) => {
   try {
-    const admin = await Admin.findOne({ _id: id, isDelete: false }).select(
-      "-password"
-    );
+    const admin = await Admin.findOne({ _id: id, isDelete: false })
+      .select("-password")
+      .lean();
     if (!admin) return { status: false, message: "Admin does not exist!" };
 
     return { status: true, message: "Get admin successfully!", data: admin };

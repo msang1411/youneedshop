@@ -57,19 +57,19 @@ const AdminSchema = new Schema(
       {
         type: Types.ObjectId,
         require: true,
-        ref: "Position",
+        ref: "AdminPosition",
       },
     ],
     roles: [
       {
         type: Types.ObjectId,
-        ref: "Role",
+        ref: "AdminRole",
       },
     ],
     permissions: [
       {
         type: Types.ObjectId,
-        ref: "Permission",
+        ref: "AdminPermission",
       },
     ],
   },

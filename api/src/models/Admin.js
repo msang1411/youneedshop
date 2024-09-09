@@ -81,9 +81,9 @@ const AdminSchema = new Schema(
 AdminSchema.pre("save", function (next) {
   // Update updateAt field to current timestamp
   if (!this.isNew) {
-    this.updateAt = new Date();
     if (this.isModified("isDelete") && this.isDelete)
       this.deleteAt = new Date();
+    else this.updateAt = new Date();
   }
   next();
 });

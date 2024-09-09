@@ -9,4 +9,4 @@ class ApiError extends Error {
   }
 }
 
-modules.exports = ApiError;
+module.exports = ApiError;

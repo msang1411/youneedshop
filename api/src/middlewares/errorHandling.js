@@ -1,7 +1,7 @@
 require("dotenv").config();
 const statusCode = require("../utils/statusCode");
 
-const errorHandlingMiddleware = (err, req, res) => {
+const errorHandlingMiddleware = (err, req, res, next) => {
   if (!err.statusCode) err.statusCode = statusCode.INTERNAL_SERVER_ERROR;
   const responseError = {
     statusCode: err.statusCode,

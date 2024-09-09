@@ -8,13 +8,13 @@ const dataValidate = (schema) => {
 
     const { value, error } = schema.validate(req.body.data);
     if (error) {
-      const errorMessage = result.error.details
+      const errorMessage = error.details
         .map((detail) => detail.message)
         .join(", ");
       return next(new ApiError(statusCode.BAD_REQUEST, errorMessage));
     } else {
       if (!req.value) req.value = {};
-      req.value.body = value;
+      req.value.data = value;
       next();
     }
   };

@@ -56,7 +56,6 @@ const adminFiltersSchema = Joi.object().keys({
 
 const adminUpdateSchema = Joi.object().keys({
   email: Joi.string().lowercase().email().optional(),
-  password: Joi.string().min(8).max(32).optional(),
   name: Joi.string().trim().optional(),
   phone: Joi.string()
     .pattern(/^\+?[1-9]\d{1,14}$/)
@@ -72,8 +71,7 @@ const adminUpdateSchema = Joi.object().keys({
   birth: Joi.date().iso().less("now").optional(),
   gender: Joi.string().valid("male", "female", "other").optional(),
   isActive: Joi.boolean().optional(),
-  isRetired: Joi.boolean().default(false),
-  isDelete: Joi.boolean().default(false),
+  isRetired: Joi.boolean().optional(),
   positions: Joi.array()
     .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
     .optional(),
@@ -85,8 +83,14 @@ const adminUpdateSchema = Joi.object().keys({
     .optional(),
 });
 
+const adminChangePassword = Joi.object().keys({
+  email: Joi.string().lowercase().email().required(),
+  password: Joi.string().min(8).max(32).required(),
+});
+
 module.exports = {
   adminCreateSchema,
   adminFiltersSchema,
   adminUpdateSchema,
+  adminChangePassword,
 };

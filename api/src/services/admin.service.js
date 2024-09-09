@@ -1,6 +1,7 @@
 const ApiError = require("../utils/ApiError");
 const statusCode = require("../utils/statusCode");
 const Admin = require("../models/Admin");
+const bcrypt = require("../helpers/bcrypt");
 
 const createAdmin = async (admin) => {
   try {
@@ -16,8 +17,11 @@ const createAdmin = async (admin) => {
       return { status: false, message: "Account has been existed!" };
     }
 
+    const passwordHashed = await bcrypt.bcryptHash(admin.password);
+    admin.password = passwordHashed;
     admin.createAt = new Date();
     await Admin.create(admin);
+
     return { status: true, message: "Account created successfully!" };
   } catch (error) {
     throw new ApiError(statusCode.INTERNAL_SERVER_ERROR, error.message);
@@ -48,7 +52,9 @@ const deleteAdmin = async (id) => {
 
 const getAdminById = async (id) => {
   try {
-    const admin = await Admin.findOne({ _id: id, isDelete: false });
+    const admin = await Admin.findOne({ _id: id, isDelete: false }).select(
+      "-password"
+    );
     if (!admin) return { status: false, message: "Admin does not exist!" };
 
     return { status: true, message: "Get admin successfully!", data: admin };
@@ -63,9 +69,10 @@ const getAdminList = async (page, limit, filters) => {
 
     let adminListPromise;
     if (page === 0 || limit === 0)
-      adminListPromise = Admin.find(filters).lean();
+      adminListPromise = Admin.find(filters).select("-password").lean();
     else
       adminListPromise = Admin.find(filters)
+        .select("-password")
         .skip((page - 1) * limit)
         .limit(limit)
         .lean();
@@ -88,7 +95,10 @@ const getAdminList = async (page, limit, filters) => {
 
 const updateAdmin = async (id, admin) => {
   try {
-    const existedAdmin = await Admin.findOne({ _id: id, isDelete: false });
+    const existedAdmin = await Admin.findOne({
+      _id: id,
+      isDelete: false,
+    }).select("-password");
     if (!existedAdmin)
       return { status: false, message: "Admin doesn't exist!" };
 
@@ -98,7 +108,7 @@ const updateAdmin = async (id, admin) => {
     return {
       status: true,
       message: "Admin updated successfully",
-      admin: updatedAdmin,
+      data: updatedAdmin,
     };
   } catch (error) {
     throw new ApiError(statusCode.INTERNAL_SERVER_ERROR, error.message);

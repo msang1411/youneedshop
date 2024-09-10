@@ -54,6 +54,11 @@ const getAdminById = async (id) => {
   try {
     const admin = await Admin.findOne({ _id: id, isDelete: false })
       .select("-password")
+      .populate({
+        path: "positions",
+        model: "admin_position",
+        select: "name",
+      })
       .lean();
     if (!admin) return { status: false, message: "Admin does not exist!" };
 
@@ -69,18 +74,31 @@ const getAdminList = async (page, limit, filters) => {
 
     let adminListPromise;
     if (page === 0 || limit === 0)
-      adminListPromise = Admin.find(filters).select("-password").lean();
+      adminListPromise = Admin.find(filters)
+        .select("-password")
+        .populate({
+          path: "positions",
+          model: "admin_position",
+          select: "name",
+        })
+        .lean();
     else
       adminListPromise = Admin.find(filters)
         .select("-password")
         .skip((page - 1) * limit)
         .limit(limit)
+        .populate({
+          path: "positions",
+          model: "admin_position",
+          select: "name",
+        })
         .lean();
 
     const [totalCount, adminList] = await Promise.all([
       totalCountPromise,
       adminListPromise,
     ]);
+    console.log(adminList);
     return {
       message: `Get admin list by limit: ${limit}, page: ${page} successfully!`,
       page,

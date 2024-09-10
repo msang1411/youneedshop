@@ -10,9 +10,9 @@ const {
   adminCreateSchema,
   adminFiltersSchema,
   adminUpdateSchema,
-} = require("../models/schemas/admin.schemas");
+} = require("../models/schemas/admin.schema");
 const { idSchema } = require("../models/schemas/id.schema");
-const { paginationSchema } = require("../models/schemas/pagination.scheme");
+const { paginationSchema } = require("../models/schemas/pagination.schema");
 const adminController = require("../controllers/admin.controller");
 
 router

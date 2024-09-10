@@ -18,6 +18,7 @@ const createAdminPosition = async (position) => {
     }
 
     position.createAt = new Date();
+    position.isDelete = false;
     await AdminPosition.create(position);
 
     return { status: true, message: "Position created successfully!" };
@@ -43,7 +44,7 @@ const deleteAdminPosition = async (id) => {
       positions: id,
       isDelete: false,
     }).lean();
-    console.log("check:", checkAdminUsing);
+
     if (checkAdminUsing)
       return {
         status: false,
@@ -80,17 +81,10 @@ const getAdminPositionById = async (id) => {
 
 const getAdminPositionList = async () => {
   try {
-    const totalCountPromise = AdminPosition.countDocuments(filters);
+    const adminPositionList = await AdminPosition.find().lean();
 
-    const adminPositionListPromise = AdminPosition.find().lean();
-
-    const [totalCount, adminPositionList] = await Promise.all([
-      totalCountPromise,
-      adminPositionListPromise,
-    ]);
     return {
       message: `Get position list successfully!`,
-      totalCount,
       data: adminPositionList,
     };
   } catch (error) {

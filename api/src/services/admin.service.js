@@ -59,6 +59,11 @@ const getAdminById = async (id) => {
         model: "admin_position",
         select: "name",
       })
+      .populate({
+        path: "roles",
+        model: "admin_role",
+        select: "name",
+      })
       .lean();
     if (!admin) return { status: false, message: "Admin does not exist!" };
 
@@ -81,6 +86,11 @@ const getAdminList = async (page, limit, filters) => {
           model: "admin_position",
           select: "name",
         })
+        .populate({
+          path: "roles",
+          model: "admin_role",
+          select: "name",
+        })
         .lean();
     else
       adminListPromise = Admin.find(filters)
@@ -92,13 +102,18 @@ const getAdminList = async (page, limit, filters) => {
           model: "admin_position",
           select: "name",
         })
+        .populate({
+          path: "roles",
+          model: "admin_role",
+          select: "name",
+        })
         .lean();
 
     const [totalCount, adminList] = await Promise.all([
       totalCountPromise,
       adminListPromise,
     ]);
-    console.log(adminList);
+
     return {
       message: `Get admin list by limit: ${limit}, page: ${page} successfully!`,
       page,
@@ -123,10 +138,24 @@ const updateAdmin = async (id, admin) => {
     Object.assign(existedAdmin, admin);
     const updatedAdmin = await existedAdmin.save();
 
+    const populatedAdmin = await Admin.findById(updatedAdmin._id)
+      .populate({
+        path: "positions",
+        model: "admin_position",
+        select: "name",
+      })
+      .populate({
+        path: "roles",
+        model: "admin_role",
+        select: "name",
+      })
+      .select("-password")
+      .lean();
+
     return {
       status: true,
       message: "Admin updated successfully",
-      data: updatedAdmin,
+      data: populatedAdmin,
     };
   } catch (error) {
     throw new ApiError(statusCode.INTERNAL_SERVER_ERROR, error.message);

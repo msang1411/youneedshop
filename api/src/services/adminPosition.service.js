@@ -81,7 +81,9 @@ const getAdminPositionById = async (id) => {
 
 const getAdminPositionList = async () => {
   try {
-    const adminPositionList = await AdminPosition.find().lean();
+    const adminPositionList = await AdminPosition.find({
+      isDelete: false,
+    }).lean();
 
     return {
       message: `Get position list successfully!`,

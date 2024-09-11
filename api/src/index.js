@@ -6,6 +6,7 @@ require("dotenv").config();
 const { errorHandlingMiddleware } = require("./middlewares/errorHandling");
 const adminRouter = require("./routes/admin.router");
 const adminPositionRouter = require("./routes/adminPosition.router");
+const adminRoleRouter = require("./routes/adminRole.router");
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -22,6 +23,7 @@ require("./db/mongodb");
 // Routers
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/admin-position", adminPositionRouter);
+app.use("/api/v1/admin-role", adminRoleRouter);
 
 // Middleware error handling
 app.use(errorHandlingMiddleware);

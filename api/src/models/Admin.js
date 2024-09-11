@@ -63,13 +63,13 @@ const AdminSchema = new Schema(
     roles: [
       {
         type: Types.ObjectId,
-        ref: "AdminRole",
+        ref: "admin_role",
       },
     ],
     permissions: [
       {
         type: Types.ObjectId,
-        ref: "AdminPermission",
+        ref: "admin_permission",
       },
     ],
   },

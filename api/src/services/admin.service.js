@@ -1,6 +1,9 @@
 const ApiError = require("../utils/ApiError");
 const statusCode = require("../utils/statusCode");
 const Admin = require("../models/Admin");
+const AdminPosition = require("../models/AdminPosition");
+const AdminRole = require("../models/AdminRole");
+const AdminPermission = require("../models/AdminPermission");
 const bcrypt = require("../helpers/bcrypt");
 
 const createAdmin = async (admin) => {
@@ -15,6 +18,30 @@ const createAdmin = async (admin) => {
           message: "Account has been existed but is in deleted state!",
         };
       return { status: false, message: "Account has been existed!" };
+    }
+
+    if (admin.positions && admin.positions.length > 0) {
+      const checkPositions = await AdminPosition.find({
+        _id: { $in: admin.positions },
+      }).lean();
+      if (checkPositions.length !== admin.positions.length)
+        return { status: false, message: "Some position IDs do not exist!" };
+    }
+
+    if (admin.roles && admin.roles.length > 0) {
+      const checkRoles = await AdminRole.find({
+        _id: { $in: admin.roles },
+      }).lean();
+      if (checkRoles.length !== admin.roles.length)
+        return { status: false, message: "Some role IDs do not exist!" };
+    }
+
+    if (admin.permissions && admin.permissions.length > 0) {
+      const checkPermissions = await AdminPermission.find({
+        _id: { $in: admin.permissions },
+      }).lean();
+      if (checkPermissions.length !== admin.permissions.length)
+        return { status: false, message: "Some permission IDs do not exist!" };
     }
 
     const passwordHashed = await bcrypt.bcryptHash(admin.password);

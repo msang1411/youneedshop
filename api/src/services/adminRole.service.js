@@ -2,12 +2,13 @@ const ApiError = require("../utils/ApiError");
 const statusCode = require("../utils/statusCode");
 const AdminRole = require("../models/AdminRole");
 const Admin = require("../models/Admin");
+const AdminPermission = require("../models/AdminPermission");
 
 const createAdminRole = async (role) => {
   try {
     const existedAdminRole = await AdminRole.findOne({
       name: role.name,
-    });
+    }).lean();
     if (existedAdminRole) {
       if (existedAdminRole.isDelete)
         return {
@@ -15,6 +16,14 @@ const createAdminRole = async (role) => {
           message: "Role has been existed but is in deleted state!",
         };
       return { status: false, message: "Role has been existed!" };
+    }
+
+    if (role.permissions && role.permissions.length > 0) {
+      const checkPermissions = await AdminPermission.find({
+        _id: { $in: role.permissions },
+      }).lean();
+      if (checkPermissions.length !== role.permissions.length)
+        return { status: false, message: "Some permission IDs do not exist!" };
     }
 
     role.createAt = new Date();

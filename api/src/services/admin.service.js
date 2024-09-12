@@ -10,7 +10,7 @@ const createAdmin = async (admin) => {
   try {
     const existedAdmin = await Admin.findOne({
       email: admin.email,
-    });
+    }).lean();
     if (existedAdmin) {
       if (existedAdmin.isDelete)
         return {
@@ -167,6 +167,30 @@ const updateAdmin = async (id, admin) => {
     }).select("-password");
     if (!existedAdmin)
       return { status: false, message: "Admin doesn't exist!" };
+
+    if (admin.positions && admin.positions.length > 0) {
+      const checkPositions = await AdminPosition.find({
+        _id: { $in: admin.positions },
+      }).lean();
+      if (checkPositions.length !== admin.positions.length)
+        return { status: false, message: "Some position IDs do not exist!" };
+    }
+
+    if (admin.roles && admin.roles.length > 0) {
+      const checkRoles = await AdminRole.find({
+        _id: { $in: admin.roles },
+      }).lean();
+      if (checkRoles.length !== admin.roles.length)
+        return { status: false, message: "Some role IDs do not exist!" };
+    }
+
+    if (admin.permissions && admin.permissions.length > 0) {
+      const checkPermissions = await AdminPermission.find({
+        _id: { $in: admin.permissions },
+      }).lean();
+      if (checkPermissions.length !== admin.permissions.length)
+        return { status: false, message: "Some permission IDs do not exist!" };
+    }
 
     Object.assign(existedAdmin, admin);
     const updatedAdmin = await existedAdmin.save();

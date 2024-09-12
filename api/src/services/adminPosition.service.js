@@ -7,7 +7,7 @@ const createAdminPosition = async (position) => {
   try {
     const existedAdminPosition = await AdminPosition.findOne({
       name: position.name,
-    });
+    }).lean();
     if (existedAdminPosition) {
       if (existedAdminPosition.isDelete)
         return {

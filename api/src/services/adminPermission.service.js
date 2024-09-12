@@ -8,7 +8,7 @@ const createAdminPermission = async (permission) => {
   try {
     const existedAdminPermission = await AdminPermission.findOne({
       $or: [{ name: permission.name }, { code: permission.code }],
-    });
+    }).lean();
     if (existedAdminPermission) {
       if (existedAdminPermission.isDelete)
         return {

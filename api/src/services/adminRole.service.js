@@ -119,6 +119,14 @@ const updateAdminRole = async (id, role) => {
     if (!existedAdminRole)
       return { status: false, message: "Role doesn't exist!" };
 
+    if (role.permissions && role.permissions.length > 0) {
+      const checkPermissions = await AdminPermission.find({
+        _id: { $in: role.permissions },
+      }).lean();
+      if (checkPermissions.length !== role.permissions.length)
+        return { status: false, message: "Some permission IDs do not exist!" };
+    }
+
     Object.assign(existedAdminRole, role);
     const updatedAdminRole = await existedAdminRole.save();
 

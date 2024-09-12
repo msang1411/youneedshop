@@ -57,12 +57,14 @@ const getAdminById = async (id) => {
       .populate({
         path: "positions",
         model: "admin_position",
-        select: "name",
       })
       .populate({
         path: "roles",
         model: "admin_role",
-        select: "name",
+      })
+      .populate({
+        path: "permissions",
+        model: "admin_permission",
       })
       .lean();
     if (!admin) return { status: false, message: "Admin does not exist!" };
@@ -84,12 +86,14 @@ const getAdminList = async (page, limit, filters) => {
         .populate({
           path: "positions",
           model: "admin_position",
-          select: "name",
         })
         .populate({
           path: "roles",
           model: "admin_role",
-          select: "name",
+        })
+        .populate({
+          path: "permissions",
+          model: "admin_permission",
         })
         .lean();
     else
@@ -100,12 +104,14 @@ const getAdminList = async (page, limit, filters) => {
         .populate({
           path: "positions",
           model: "admin_position",
-          select: "name",
         })
         .populate({
           path: "roles",
           model: "admin_role",
-          select: "name",
+        })
+        .populate({
+          path: "permissions",
+          model: "admin_permission",
         })
         .lean();
 
@@ -142,12 +148,14 @@ const updateAdmin = async (id, admin) => {
       .populate({
         path: "positions",
         model: "admin_position",
-        select: "name",
       })
       .populate({
         path: "roles",
         model: "admin_role",
-        select: "name",
+      })
+      .populate({
+        path: "permissions",
+        model: "admin_permission",
       })
       .select("-password")
       .lean();

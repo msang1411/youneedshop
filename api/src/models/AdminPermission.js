@@ -1,10 +1,31 @@
 const { model, Schema } = require("mongoose");
 
-const AdminPositionSchema = new Schema(
+const AdminPermissionSchema = new Schema(
   {
     name: {
       type: String,
       required: true,
+      unique: true,
+    },
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    actions: {
+      type: [
+        {
+          action: {
+            type: String,
+            required: true,
+          },
+          description: {
+            type: String,
+          },
+        },
+      ],
+      required: true,
+      _id: false,
     },
     description: {
       type: String,
@@ -25,11 +46,11 @@ const AdminPositionSchema = new Schema(
     },
   },
   {
-    collection: "admin_position",
+    collection: "admin_permission",
   }
 );
 
-AdminPositionSchema.pre("save", function (next) {
+AdminPermissionSchema.pre("save", function (next) {
   // Update updateAt field to current timestamp
   if (!this.isNew) {
     if (this.isModified("isDelete") && this.isDelete)
@@ -39,5 +60,5 @@ AdminPositionSchema.pre("save", function (next) {
   next();
 });
 
-const AdminPosition = model("admin_position", AdminPositionSchema);
-module.exports = AdminPosition;
+const AdminPermission = model("admin_permission", AdminPermissionSchema);
+module.exports = AdminPermission;

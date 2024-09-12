@@ -66,11 +66,10 @@ const getAdminRoleById = async (id) => {
       _id: id,
       isDelete: false,
     })
-      // .populate({
-      //   path: "permissions",
-      //   model: "admin_permission",
-      //   select: "name",
-      // })
+      .populate({
+        path: "permissions",
+        model: "admin_permission",
+      })
       .lean();
     if (!role) return { status: false, message: "Role does not exist!" };
 
@@ -87,11 +86,10 @@ const getAdminRoleById = async (id) => {
 const getAdminRoleList = async () => {
   try {
     const adminRoleList = await AdminRole.find({ isDelete: false })
-      // .populate({
-      //   path: "permissions",
-      //   model: "admin_permission",
-      //   select: "name",
-      // })
+      .populate({
+        path: "permissions",
+        model: "admin_permission",
+      })
       .lean();
 
     return {
@@ -116,11 +114,10 @@ const updateAdminRole = async (id, role) => {
     const updatedAdminRole = await existedAdminRole.save();
 
     const populatedAdmin = await AdminRole.findById(updatedAdminRole._id)
-      // .populate({
-      //   path: "permissions",
-      //   model: "admin_permission",
-      //   select: "name",
-      // })
+      .populate({
+        path: "permissions",
+        model: "admin_permission",
+      })
       .lean();
 
     return {

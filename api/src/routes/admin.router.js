@@ -14,6 +14,7 @@ const {
 const { idSchema } = require("../models/schemas/id.schema");
 const { paginationSchema } = require("../models/schemas/pagination.schema");
 const adminController = require("../controllers/admin.controller");
+const { verifyAccessToken } = require("../authentication/authentication");
 
 router
   .route("/create")

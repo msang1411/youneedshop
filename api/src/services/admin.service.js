@@ -6,6 +6,29 @@ const AdminRole = require("../models/AdminRole");
 const AdminPermission = require("../models/AdminPermission");
 const bcrypt = require("../helpers/bcrypt");
 
+const changePassword = async (id, newPassword) => {
+  try {
+    const admin = await Admin.findOne({
+      _id: id,
+      isDelete: false,
+    });
+
+    if (!admin)
+      return {
+        status: false,
+        message: "Account does not exist or has already been deleted!",
+      };
+
+    const passwordHashed = await bcrypt.bcryptHash(newPassword);
+    admin.password = passwordHashed;
+    await admin.save();
+
+    return { status: true, message: "Account has been changed password!" };
+  } catch (error) {
+    throw new ApiError(statusCode.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
 const createAdmin = async (admin) => {
   try {
     const existedAdmin = await Admin.findOne({
@@ -222,6 +245,7 @@ const updateAdmin = async (id, admin) => {
 };
 
 module.exports = {
+  changePassword,
   createAdmin,
   deleteAdmin,
   getAdminById,

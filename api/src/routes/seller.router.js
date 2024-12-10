@@ -7,50 +7,50 @@ const {
   queryValidate,
 } = require("../helpers/validator");
 const {
-  adminChangePassword,
-  adminCreateSchema,
-  adminFiltersSchema,
-  adminUpdateSchema,
-} = require("../models/schemas/admin.schema");
+  sellerChangePassword,
+  sellerCreateSchema,
+  sellerFiltersSchema,
+  sellerUpdateSchema,
+} = require("../models/schemas/seller.schema");
 const { idSchema } = require("../models/schemas/id.schema");
 const { paginationSchema } = require("../models/schemas/pagination.schema");
-const adminController = require("../controllers/admin.controller");
+const sellerController = require("../controllers/seller.controller");
 // const { verifyAccessToken } = require("../authentication/authentication");
 
 router
   .route("/change-password/:id")
   .post(
     paramsValidate(idSchema),
-    dataValidate(adminChangePassword),
-    adminController.changePassword
+    dataValidate(sellerChangePassword),
+    sellerController.changePassword
   );
 
 router
   .route("/create")
-  .post(dataValidate(adminCreateSchema), adminController.createAdmin);
+  .post(dataValidate(sellerCreateSchema), sellerController.createSeller);
 
 router
   .route("/delete/:id")
-  .delete(paramsValidate(idSchema), adminController.deleteAdmin);
+  .delete(paramsValidate(idSchema), sellerController.deleteSeller);
 
 router
   .route("/get-list")
   .post(
     queryValidate(paginationSchema),
-    filtersValidate(adminFiltersSchema),
-    adminController.getAdminList
+    filtersValidate(sellerFiltersSchema),
+    sellerController.getSellerList
   );
 
 router
   .route("/update/:id")
   .put(
     paramsValidate(idSchema),
-    dataValidate(adminUpdateSchema),
-    adminController.updateAdmin
+    dataValidate(sellerUpdateSchema),
+    sellerController.updateSeller
   );
 
 router
   .route("/:id")
-  .get(paramsValidate(idSchema), adminController.getAdminById);
+  .get(paramsValidate(idSchema), sellerController.getSellerById);
 
 module.exports = router;

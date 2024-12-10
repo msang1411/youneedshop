@@ -1,9 +1,9 @@
 const statusCode = require("../utils/statusCode");
-const adminService = require("../services/admin.service");
+const sellerService = require("../services/seller.service");
 
 const changePassword = async (req, res, next) => {
   try {
-    const result = await adminService.changePassword(
+    const result = await sellerService.changePassword(
       req.value.params.id,
       req.value.data.newPassword
     );
@@ -21,9 +21,9 @@ const changePassword = async (req, res, next) => {
   }
 };
 
-const createAdmin = async (req, res, next) => {
+const createSeller = async (req, res, next) => {
   try {
-    const result = await adminService.createAdmin(req.value.data);
+    const result = await sellerService.createSeller(req.value.data);
 
     if (!result.status)
       return res.status(statusCode.CONFLICT).json({
@@ -37,9 +37,9 @@ const createAdmin = async (req, res, next) => {
   }
 };
 
-const deleteAdmin = async (req, res, next) => {
+const deleteSeller = async (req, res, next) => {
   try {
-    const result = await adminService.deleteAdmin(req.value.params.id);
+    const result = await sellerService.deleteSeller(req.value.params.id);
     if (!result.status)
       return res.status(statusCode.NOT_FOUND).json({
         message: result.message,
@@ -52,9 +52,9 @@ const deleteAdmin = async (req, res, next) => {
   }
 };
 
-const getAdminById = async (req, res, next) => {
+const getSellerById = async (req, res, next) => {
   try {
-    const result = await adminService.getAdminById(req.value.params.id);
+    const result = await sellerService.getSellerById(req.value.params.id);
 
     if (!result.status)
       return res.status(statusCode.NOT_FOUND).json({
@@ -69,9 +69,9 @@ const getAdminById = async (req, res, next) => {
   }
 };
 
-const getAdminList = async (req, res, next) => {
+const getSellerList = async (req, res, next) => {
   try {
-    const result = await adminService.getAdminList(
+    const result = await sellerService.getSellerList(
       req.value.query.page,
       req.value.query.limit,
       req.value.filters
@@ -89,9 +89,9 @@ const getAdminList = async (req, res, next) => {
   }
 };
 
-const updateAdmin = async (req, res, next) => {
+const updateSeller = async (req, res, next) => {
   try {
-    const result = await adminService.updateAdmin(
+    const result = await sellerService.updateSeller(
       req.value.params.id,
       req.value.data
     );
@@ -111,9 +111,9 @@ const updateAdmin = async (req, res, next) => {
 
 module.exports = {
   changePassword,
-  createAdmin,
-  deleteAdmin,
-  getAdminById,
-  getAdminList,
-  updateAdmin,
+  createSeller,
+  deleteSeller,
+  getSellerById,
+  getSellerList,
+  updateSeller,
 };

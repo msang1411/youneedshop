@@ -1,5 +1,9 @@
 const Joi = require("joi");
 
+const adminChangePassword = Joi.object().keys({
+  newPassword: Joi.string().min(8).max(32).required(),
+});
+
 const adminCreateSchema = Joi.object().keys({
   email: Joi.string().email().lowercase().required(),
   password: Joi.string().min(8).max(32).required(),
@@ -83,14 +87,9 @@ const adminUpdateSchema = Joi.object().keys({
     .optional(),
 });
 
-const adminChangePassword = Joi.object().keys({
-  email: Joi.string().lowercase().email().required(),
-  password: Joi.string().min(8).max(32).required(),
-});
-
 module.exports = {
+  adminChangePassword,
   adminCreateSchema,
   adminFiltersSchema,
   adminUpdateSchema,
-  adminChangePassword,
 };

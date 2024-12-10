@@ -1,26 +1,22 @@
 const { model, Schema } = require("mongoose");
 
-const AddressSchema = new Schema(
-  {
-    province: {
-      type: String,
-      required: true,
-      ref: "province",
-    },
-    district: {
-      type: String,
-      required: true,
-      ref: "district",
-    },
-    detail: {
-      type: String,
-      required: true,
-    },
+const AddressSchema = new Schema({
+  _id: false,
+  province: {
+    type: String,
+    required: true,
+    ref: "province",
   },
-  {
-    _id: false,
-  }
-);
+  district: {
+    type: String,
+    required: true,
+    ref: "district",
+  },
+  detail: {
+    type: String,
+    required: true,
+  },
+});
 
 const SellerSchema = new Schema(
   {

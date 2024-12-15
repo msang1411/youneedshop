@@ -15,8 +15,6 @@ const sellerCreateSchema = Joi.object().keys({
       "Incorrect phone number format (have 8 - 15 number and '+' is first)"
     )
     .required(),
-  avatarURL: Joi.string().uri().optional(),
-  backgroundURL: Joi.string().uri().optional(),
   nationalId: Joi.string()
     .pattern(/^\d{9}$|^\d{12}$/)
     .message("National ID invalid")
@@ -41,8 +39,6 @@ const sellerUpdateSchema = Joi.object().keys({
       "Incorrect phone number format (have 8 - 15 number and '+' is first)"
     )
     .optional(),
-  avatarURL: Joi.string().uri().optional(),
-  backgroundURL: Joi.string().uri().optional(),
   nationalId: Joi.string()
     .pattern(/^\d{9}$|^\d{12}$/)
     .message("National ID invalid")

@@ -5,8 +5,25 @@ const dataValidate = (schema) => {
   return (req, res, next) => {
     if (!req.body || !req.body.data)
       return next(new ApiError(statusCode.BAD_REQUEST, "Invalid request"));
-
     const { value, error } = schema.validate(req.body.data);
+    if (error) {
+      const errorMessage = error.details
+        .map((detail) => detail.message)
+        .join(", ");
+      return next(new ApiError(statusCode.BAD_REQUEST, errorMessage));
+    } else {
+      if (!req.value) req.value = {};
+      req.value.data = value;
+      next();
+    }
+  };
+};
+
+const metadataValidate = (schema) => {
+  return (req, res, next) => {
+    if (!req.body || !req.body.data)
+      return next(new ApiError(statusCode.BAD_REQUEST, "Invalid request"));
+    const { value, error } = schema.validate(JSON.parse(req.body.data));
     if (error) {
       const errorMessage = error.details
         .map((detail) => detail.message)
@@ -83,6 +100,7 @@ const queryValidate = (schema) => {
 
 module.exports = {
   dataValidate,
+  metadataValidate,
   filtersValidate,
   paramsValidate,
   queryValidate,

@@ -23,7 +23,7 @@ const changePassword = async (req, res, next) => {
 
 const createSeller = async (req, res, next) => {
   try {
-    const result = await sellerService.createSeller(req.value.data);
+    const result = await sellerService.createSeller(req.value.data, req.file);
 
     if (!result.status)
       return res.status(statusCode.CONFLICT).json({
@@ -89,6 +89,26 @@ const getSellerList = async (req, res, next) => {
   }
 };
 
+const updateAvatar = async (req, res, next) => {
+  try {
+    const result = await sellerService.updateAvatar(
+      req.value.params.id,
+      req.file
+    );
+
+    if (!result.status)
+      return res.status(statusCode.NOT_FOUND).json({
+        message: result.message,
+      });
+    return res.status(statusCode.OK).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateSeller = async (req, res, next) => {
   try {
     const result = await sellerService.updateSeller(
@@ -115,5 +135,6 @@ module.exports = {
   deleteSeller,
   getSellerById,
   getSellerList,
+  updateAvatar,
   updateSeller,
 };

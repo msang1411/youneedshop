@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   dataValidate,
+  metadataValidate,
   filtersValidate,
   paramsValidate,
   queryValidate,
@@ -15,6 +16,7 @@ const {
 const { idSchema } = require("../models/schemas/id.schema");
 const { paginationSchema } = require("../models/schemas/pagination.schema");
 const sellerController = require("../controllers/seller.controller");
+const { upload } = require("../middlewares/uploadFile");
 // const { verifyAccessToken } = require("../authentication/authentication");
 
 router
@@ -27,7 +29,11 @@ router
 
 router
   .route("/create")
-  .post(dataValidate(sellerCreateSchema), sellerController.createSeller);
+  .post(
+    upload.single("image"),
+    metadataValidate(sellerCreateSchema),
+    sellerController.createSeller
+  );
 
 router
   .route("/delete/:id")
@@ -47,6 +53,14 @@ router
     paramsValidate(idSchema),
     dataValidate(sellerUpdateSchema),
     sellerController.updateSeller
+  );
+
+router
+  .route("/update-avatar/:id")
+  .put(
+    upload.single("image"),
+    paramsValidate(idSchema),
+    sellerController.updateAvatar
   );
 
 router

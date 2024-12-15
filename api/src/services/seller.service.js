@@ -2,6 +2,8 @@ const ApiError = require("../utils/ApiError");
 const statusCode = require("../utils/statusCode");
 const Seller = require("../models/Seller");
 const bcrypt = require("../helpers/bcrypt");
+const { AVATAR_DEFAULT, AVATAR_URL } = require("../configs");
+const { uploadFile, deleteFile } = require("../services/googleDrive.service");
 
 const changePassword = async (id, newPassword) => {
   try {
@@ -26,7 +28,7 @@ const changePassword = async (id, newPassword) => {
   }
 };
 
-const createSeller = async (seller) => {
+const createSeller = async (seller, avatarFile) => {
   try {
     const existedSeller = await Seller.findOne({
       email: seller.email,
@@ -43,6 +45,19 @@ const createSeller = async (seller) => {
     const passwordHashed = await bcrypt.bcryptHash(seller.password);
     seller.password = passwordHashed;
     seller.createAt = new Date();
+
+    if (!avatarFile) seller.avatarURL = AVATAR_DEFAULT;
+    else {
+      const avatarId = await uploadFile(
+        avatarFile.buffer,
+        avatarFile.originalname,
+        avatarFile.mimetype
+      );
+
+      seller.avatarId = avatarId;
+      seller.avatarURL = AVATAR_URL + avatarId;
+    }
+
     await Seller.create(seller);
 
     return { status: true, message: "Account created successfully!" };
@@ -117,6 +132,38 @@ const getSellerList = async (page, limit, filters) => {
   }
 };
 
+const updateAvatar = async (id, avatarFile) => {
+  try {
+    if (!avatarFile) return { status: false, message: "Image not found!" };
+
+    const seller = await Seller.findOne({
+      _id: id,
+      isDelete: false,
+    }).select("-password");
+    if (!seller) return { status: false, message: "Seller doesn't exist!" };
+
+    const avatarId = await uploadFile(
+      avatarFile.buffer,
+      avatarFile.originalname,
+      avatarFile.mimetype
+    );
+
+    if (seller.avatarId) await deleteFile(seller.avatarId);
+
+    seller.avatarId = avatarId;
+    seller.avatarURL = AVATAR_URL + avatarId;
+
+    const updatedSeller = await seller.save();
+    return {
+      status: true,
+      message: "Seller updated avatar successfully",
+      data: updatedSeller,
+    };
+  } catch (error) {
+    throw new ApiError(statusCode.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
 const updateSeller = async (id, seller) => {
   try {
     const existedSeller = await Seller.findOne({
@@ -145,5 +192,6 @@ module.exports = {
   deleteSeller,
   getSellerById,
   getSellerList,
+  updateAvatar,
   updateSeller,
 };

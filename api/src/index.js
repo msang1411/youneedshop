@@ -9,6 +9,8 @@ const adminPositionRouter = require("./routes/adminPosition.router");
 const adminRoleRouter = require("./routes/adminRole.router");
 const adminPermissionRouter = require("./routes/adminPermission.router");
 const commonRouter = require("./routes/common.router");
+const sellerRouter = require("./routes/seller.router");
+const testRouter = require("./routes/test.router");
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -28,6 +30,8 @@ app.use("/api/v1/admin-position", adminPositionRouter);
 app.use("/api/v1/admin-role", adminRoleRouter);
 app.use("/api/v1/admin-permission", adminPermissionRouter);
 app.use("/api/v1/common", commonRouter);
+app.use("/api/v1/seller", sellerRouter);
+app.use("/api/v1/test", testRouter);
 
 // Middleware error handling
 app.use(errorHandlingMiddleware);

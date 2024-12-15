@@ -40,7 +40,13 @@ const SellerSchema = new Schema(
     avatarURL: {
       type: String,
     },
+    avatarId: {
+      type: String,
+    },
     backgroundURL: {
+      type: String,
+    },
+    backgroundId: {
       type: String,
     },
     nationalId: {

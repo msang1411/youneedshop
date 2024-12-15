@@ -2,7 +2,7 @@ const ApiError = require("../utils/ApiError");
 const statusCode = require("../utils/statusCode");
 const Seller = require("../models/Seller");
 const bcrypt = require("../helpers/bcrypt");
-const { AVATAR_DEFAULT, AVATAR_URL } = require("../configs");
+const { AVATAR_DEFAULT, IMAGE_URL } = require("../configs");
 const { uploadFile, deleteFile } = require("../services/googleDrive.service");
 
 const changePassword = async (id, newPassword) => {
@@ -151,12 +151,44 @@ const updateAvatar = async (id, avatarFile) => {
     if (seller.avatarId) await deleteFile(seller.avatarId);
 
     seller.avatarId = avatarId;
-    seller.avatarURL = AVATAR_URL + avatarId;
+    seller.avatarURL = IMAGE_URL + avatarId;
 
     const updatedSeller = await seller.save();
     return {
       status: true,
       message: "Seller updated avatar successfully",
+      data: updatedSeller,
+    };
+  } catch (error) {
+    throw new ApiError(statusCode.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+const updateBackground = async (id, backgroundFile) => {
+  try {
+    if (!backgroundFile) return { status: false, message: "Image not found!" };
+
+    const seller = await Seller.findOne({
+      _id: id,
+      isDelete: false,
+    }).select("-password");
+    if (!seller) return { status: false, message: "Seller doesn't exist!" };
+
+    const backgroundId = await uploadFile(
+      backgroundFile.buffer,
+      backgroundFile.originalname,
+      backgroundFile.mimetype
+    );
+
+    if (seller.backgroundId) await deleteFile(seller.backgroundId);
+
+    seller.backgroundId = backgroundId;
+    seller.backgroundURL = IMAGE_URL + backgroundId;
+
+    const updatedSeller = await seller.save();
+    return {
+      status: true,
+      message: "Seller updated background successfully",
       data: updatedSeller,
     };
   } catch (error) {
@@ -193,5 +225,6 @@ module.exports = {
   getSellerById,
   getSellerList,
   updateAvatar,
+  updateBackground,
   updateSeller,
 };

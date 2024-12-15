@@ -64,6 +64,14 @@ router
   );
 
 router
+  .route("/update-background/:id")
+  .put(
+    upload.single("image"),
+    paramsValidate(idSchema),
+    sellerController.updateBackground
+  );
+
+router
   .route("/:id")
   .get(paramsValidate(idSchema), sellerController.getSellerById);
 

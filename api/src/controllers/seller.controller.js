@@ -109,6 +109,26 @@ const updateAvatar = async (req, res, next) => {
   }
 };
 
+const updateBackground = async (req, res, next) => {
+  try {
+    const result = await sellerService.updateBackground(
+      req.value.params.id,
+      req.file
+    );
+
+    if (!result.status)
+      return res.status(statusCode.NOT_FOUND).json({
+        message: result.message,
+      });
+    return res.status(statusCode.OK).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateSeller = async (req, res, next) => {
   try {
     const result = await sellerService.updateSeller(
@@ -136,5 +156,6 @@ module.exports = {
   getSellerById,
   getSellerList,
   updateAvatar,
+  updateBackground,
   updateSeller,
 };
